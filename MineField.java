@@ -6,11 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-<<<<<<< HEAD
-
-public class MineField extends Application {
-
-=======
 import java.util.Scanner;
 
 
@@ -23,21 +18,11 @@ public class MineField extends Application {
     private boolean alreadyLost;
     private int numExposedCells;
 
-
->>>>>>> 59320860db09db8f82230288ac4470e58f6e8790
     private class Cell {
         boolean hasMine;
         boolean exposed;
         boolean marked;
-<<<<<<< HEAD
-        char numSurroundingMines;
-    }
 
-    private Cell[][] mineField(int row, int col){
-        Cell[][] newMineField = new Cell[row][col];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col ; j++) {
-=======
         int numSurroundingMines;
     }
 
@@ -65,19 +50,11 @@ public class MineField extends Application {
         matrix = new Cell[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width ; j++) {
->>>>>>> 59320860db09db8f82230288ac4470e58f6e8790
                 Cell cell = new Cell();
                 cell.exposed = false;
                 cell.hasMine = false;
                 cell.marked = false;
                 cell.numSurroundingMines = 0;
-<<<<<<< HEAD
-                newMineField[i][j]=cell;
-            }
-
-        }
-        return newMineField;
-=======
                 matrix[i][j]=cell;
             }
 
@@ -126,7 +103,6 @@ public class MineField extends Application {
 
 
         return mineField;
->>>>>>> 59320860db09db8f82230288ac4470e58f6e8790
     }
 
 
@@ -149,11 +125,6 @@ public class MineField extends Application {
         return false;
     }
 
-<<<<<<< HEAD
-    public int expose(int column, int row){
-
-        return 0;
-=======
     public int expose(int row, int col){
         if(alreadyLost) return -2;
         Cell cell = matrix[row][col];
@@ -204,7 +175,6 @@ public class MineField extends Application {
             }
         }
         return false;
->>>>>>> 59320860db09db8f82230288ac4470e58f6e8790
     }
 
     public int isExposed(int column, int row){
@@ -215,8 +185,7 @@ public class MineField extends Application {
         return 0;
     }
 
-<<<<<<< HEAD
-=======
+
     public void print(){
         System.out.print("   ");
         for (int i = 0; i < width; i++) {
@@ -246,24 +215,10 @@ public class MineField extends Application {
         }
     }
 
->>>>>>> 59320860db09db8f82230288ac4470e58f6e8790
-
-
     public static void main(String[] args) {
         MineField newMineField = new MineField();
 
-<<<<<<< HEAD
-        int row = 5;
-        int col = 5;
-        newMineField.mineField( row, col);
 
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                System.out.print("[] ");
-            }
-            System.out.println();
-
-=======
         Scanner reader = new Scanner(System.in);  // Reading from System.in
         System.out.println("Choose Difficulty (1 2 3): ");
         int difficulty = reader.nextInt(); // Scans the next token of the input as an int.
@@ -295,7 +250,6 @@ public class MineField extends Application {
         else{
             System.out.println();
             System.out.println("--------------YOU WON--------------");
->>>>>>> 59320860db09db8f82230288ac4470e58f6e8790
         }
 
     }
