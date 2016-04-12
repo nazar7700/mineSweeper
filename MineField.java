@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Scanner;
+
 
 public class MineField extends Application {
 
@@ -134,29 +136,24 @@ public class MineField extends Application {
             return -1;
         }
         int n = cell.numSurroundingMines;
-        System.out.println("numSurroundingMines = " + n);
         if (n == 0){
             int w = width;
             int h = height;
             boolean changed = true;
-            //do{
             while(changed){
-                //System.out.println("Entered while loop");
                 int rr, cc;
                 changed = false;
                 for(rr = 0; rr < h; rr++){
                     for(cc = 0; cc < w; cc++){
-                        //System.out.println("Entered Second for Loop");
                         if(autoExposeCellAt(rr, cc))
                             changed = true;
                     }
                 }
-            } //while(changed);
+            }
         }
         return n;
     }
     public boolean autoExposeCellAt(int row, int col){
-        //System.out.println("Entered autoExpose");
         Cell cell = matrix[row][col];
         if(!cell.exposed && !cell.hasMine){
             int w = width;
@@ -169,7 +166,6 @@ public class MineField extends Application {
                     int cc = col+i;
                     if(rr < 0 || rr >= h || cc < 0 || cc >= w) continue;
                     Cell neighbor = matrix[rr][cc];
-                    //System.out.println("Reached Here");
                     if(neighbor.exposed && neighbor.numSurroundingMines == 0){
                         cell.exposed = true;
                         numExposedCells++;
@@ -189,63 +185,71 @@ public class MineField extends Application {
         return 0;
     }
 
-
-
-    public static void main(String[] args) {
-        MineField newMineField = new MineField();
-
-        int difficulty = 1;
-
-
-        newMineField.makeField(difficulty);
-
-//        for (int i = 0; i < newMineField.height; i++) {
-//            for (int j = 0; j < newMineField.width; j++) {
-//                System.out.print("[ ] ");
-//            }
-//            System.out.println();
-//
-//        }
-//        System.out.println();
-
-        newMineField.setMines(newMineField);
-
-        int mines = 0;
-
-        for (int i = 0; i < newMineField.height; i++) {
-            for (int j = 0; j < newMineField.width; j++) {
-                if(newMineField.matrix[i][j].hasMine == true){
-                    System.out.print("[*] ");
-                    mines ++;
-                }
-//                else if(newMineField.matrix[i][j].numSurroundingMines > 0){
-//                    System.out.print("["+newMineField.matrix[i][j].numSurroundingMines +"] ");
-//                }
-                else System.out.print("[ ] ");
+    public void print(){
+        System.out.print("   ");
+        for (int i = 0; i < width; i++) {
+            if(i > 9){
+                System.out.print(i+"  ");
             }
-            System.out.println();
-
+            else
+            System.out.print(i+ "   ");
         }
-        //System.out.println("Mines: " + mines);
         System.out.println();
 
-        int expRow = 1;
-        int expCol = 1;
-        newMineField.expose(expRow, expCol);
-
-        for (int i = 0; i < newMineField.height; i++) {
-            for (int j = 0; j < newMineField.width; j++) {
-                if(newMineField.matrix[i][j].hasMine == true){
+        for (int i = 0; i < height; i++) {
+            if(i > 9){
+                System.out.print(i+" ");
+            }else System.out.print(i+"  ");
+            for (int j = 0; j < width; j++) {
+                if(matrix[i][j].hasMine == true){
                     System.out.print("[*] ");
-                    mines ++;
                 }
-                else if(newMineField.matrix[i][j].exposed == true){
+                else if(matrix[i][j].exposed == true){
                     System.out.print("[O] ");
                 }
                 else System.out.print("[ ] ");
             }
             System.out.println();
 
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        MineField newMineField = new MineField();
+
+        Scanner reader = new Scanner(System.in);  // Reading from System.in
+        System.out.println("Choose Difficulty (1 2 3): ");
+        int difficulty = reader.nextInt(); // Scans the next token of the input as an int.
+
+        newMineField.makeField(difficulty);
+
+        newMineField.setMines(newMineField);
+
+        newMineField.print();
+
+        System.out.println();
+        while(!newMineField.alreadyLost && newMineField.numExposedCells + newMineField.numOfMines != newMineField.height*newMineField.width ) {
+            reader = new Scanner(System.in);  // Reading from System.in
+            System.out.println("Enter row col: ");
+            int row = reader.nextInt(); // Scans the next token of the input as an int.
+            int col = reader.nextInt();
+
+            newMineField.expose(row, col);
+            System.out.println("Exposed Cells: "+ newMineField.numExposedCells);
+            System.out.println("Mines: "+ newMineField.numOfMines);
+
+            newMineField.print();
+        }
+
+        if(newMineField.alreadyLost){
+            System.out.println();
+            System.out.println("--------------YOU LOST--------------");
+        }
+        else{
+            System.out.println();
+            System.out.println("--------------YOU WON--------------");
         }
 
     }
