@@ -11,22 +11,23 @@ import java.util.Scanner;
 
 public class MineField extends Application {
 
-    Cell[][] matrix;
-    private int width;
-    private int height;
-    private int numOfMines;
-    private boolean alreadyLost;
-    private int numExposedCells;
+    public Cell[][] matrix;
+    public int width;
+    public int height;
+    public int numOfMines;
+    public boolean alreadyLost;
+    public int numExposedCells;
 
 
-    private class Cell {
+
+    public class Cell {
         boolean hasMine;
         boolean exposed;
         boolean marked;
         int numSurroundingMines;
     }
 
-    private Cell[][] makeField(int difficulty){
+    public void makeField(int difficulty){
 
         if (difficulty == 1){
             height = 9;
@@ -59,12 +60,10 @@ public class MineField extends Application {
             }
 
         }
-
-
-        return matrix;
+        //return matrix;
     }
 
-    private MineField setMines(MineField mineField){
+    public void setMines(MineField mineField){
         int w = width;
         int h = height;
         int n = w*h;
@@ -102,7 +101,7 @@ public class MineField extends Application {
         }
 
 
-        return mineField;
+        //return mineField;
     }
 
 
@@ -110,19 +109,9 @@ public class MineField extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("minesweeper.fxml"));
         primaryStage.setTitle("Minesweeper");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 300, 300));
+        runNewGame(1);
         primaryStage.show();
-    }
-
-    public void reset(){
-
-
-    }
-
-
-    public boolean mark(int column, int row){
-
-        return false;
     }
 
     public int expose(int row, int col){
@@ -177,15 +166,8 @@ public class MineField extends Application {
         return false;
     }
 
-    public int isExposed(int column, int row){
-        return 0;
-    }
 
-    public int unexposedCount(){
-        return 0;
-    }
-
-    public void print(){
+    public void print(MineField field){
         System.out.print("   ");
         for (int i = 0; i < width; i++) {
             if(i > 9){
@@ -201,10 +183,10 @@ public class MineField extends Application {
                 System.out.print(i+" ");
             }else System.out.print(i+"  ");
             for (int j = 0; j < width; j++) {
-                if(matrix[i][j].hasMine == true){
+                if(field.matrix[i][j].hasMine == true){
                     System.out.print("[*] ");
                 }
-                else if(matrix[i][j].exposed == true){
+                else if(field.matrix[i][j].exposed == true){
                     System.out.print("[O] ");
                 }
                 else System.out.print("[ ] ");
@@ -214,43 +196,54 @@ public class MineField extends Application {
         }
     }
 
+    public void runNewGame(int difficulty){
+        MineField minefield = new MineField();
+
+        minefield.makeField(difficulty);
+
+        minefield.setMines(minefield);
+
+        minefield.print(minefield);
+    }
+
 
 
     public static void main(String[] args) {
-        MineField newMineField = new MineField();
-
-        Scanner reader = new Scanner(System.in);  // Reading from System.in
-        System.out.println("Choose Difficulty (1 2 3): ");
-        int difficulty = reader.nextInt(); // Scans the next token of the input as an int.
-
-        newMineField.makeField(difficulty);
-
-        newMineField.setMines(newMineField);
-
-        newMineField.print();
-
-        System.out.println();
-        while(!newMineField.alreadyLost && newMineField.numExposedCells + newMineField.numOfMines != newMineField.height*newMineField.width ) {
-            reader = new Scanner(System.in);  // Reading from System.in
-            System.out.println("Enter row col: ");
-            int row = reader.nextInt(); // Scans the next token of the input as an int.
-            int col = reader.nextInt();
-
-            newMineField.expose(row, col);
-            System.out.println("Exposed Cells: "+ newMineField.numExposedCells);
-            System.out.println("Mines: "+ newMineField.numOfMines);
-
-            newMineField.print();
-        }
-
-        if(newMineField.alreadyLost){
-            System.out.println();
-            System.out.println("--------------YOU LOST--------------");
-        }
-        else{
-            System.out.println();
-            System.out.println("--------------YOU WON--------------");
-        }
+        launch(args);
+//        MineField newMineField = new MineField();
+//
+//        Scanner reader = new Scanner(System.in);  // Reading from System.in
+//        System.out.println("Choose Difficulty (1 2 3): ");
+//        int difficulty = reader.nextInt(); // Scans the next token of the input as an int.
+//
+//        newMineField.makeField(difficulty);
+//
+//        newMineField.setMines(newMineField);
+//
+//        newMineField.print();
+//
+//        System.out.println();
+//        while(!newMineField.alreadyLost && newMineField.numExposedCells + newMineField.numOfMines != newMineField.height*newMineField.width ) {
+//            reader = new Scanner(System.in);  // Reading from System.in
+//            System.out.println("Enter row col: ");
+//            int row = reader.nextInt(); // Scans the next token of the input as an int.
+//            int col = reader.nextInt();
+//
+//            newMineField.expose(row, col);
+//            System.out.println("Exposed Cells: "+ newMineField.numExposedCells);
+//            System.out.println("Mines: "+ newMineField.numOfMines);
+//
+//            newMineField.print();
+//        }
+//
+//        if(newMineField.alreadyLost){
+//            System.out.println();
+//            System.out.println("--------------YOU LOST--------------");
+//        }
+//        else{
+//            System.out.println();
+//            System.out.println("--------------YOU WON--------------");
+//        }
 
     }
 }
