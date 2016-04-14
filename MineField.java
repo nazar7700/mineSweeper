@@ -11,16 +11,16 @@ import java.util.Scanner;
 
 public class MineField extends Application {
 
-    public Cell[][] matrix;
-    public int width;
-    public int height;
-    public int numOfMines;
-    public boolean alreadyLost;
-    public int numExposedCells;
+    private Cell[][] matrix;
+    private int width;
+    private int height;
+    private int numOfMines;
+    private boolean alreadyLost;
+    private int numExposedCells;
 
 
 
-    public class Cell {
+    private class Cell {
         boolean hasMine;
         boolean exposed;
         boolean marked;
@@ -109,8 +109,7 @@ public class MineField extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("minesweeper.fxml"));
         primaryStage.setTitle("Minesweeper");
-        primaryStage.setScene(new Scene(root, 300, 300));
-        runNewGame(1);
+        primaryStage.setScene(new Scene(root, 500, 500));
         primaryStage.show();
     }
 
@@ -169,7 +168,7 @@ public class MineField extends Application {
 
     public void print(MineField field){
         System.out.print("   ");
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < field.width; i++) {
             if(i > 9){
                 System.out.print(i+"  ");
             }
@@ -178,11 +177,11 @@ public class MineField extends Application {
         }
         System.out.println();
 
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < field.height; i++) {
             if(i > 9){
                 System.out.print(i+" ");
             }else System.out.print(i+"  ");
-            for (int j = 0; j < width; j++) {
+            for (int j = 0; j < field.width; j++) {
                 if(field.matrix[i][j].hasMine == true){
                     System.out.print("[*] ");
                 }
@@ -196,15 +195,15 @@ public class MineField extends Application {
         }
     }
 
-    public void runNewGame(int difficulty){
-        MineField minefield = new MineField();
-
-        minefield.makeField(difficulty);
-
-        minefield.setMines(minefield);
-
-        minefield.print(minefield);
-    }
+//    public void runNewGame(int difficulty){
+//        MineField minefield = new MineField();
+//
+//        minefield.makeField(difficulty);
+//
+//        minefield.setMines(minefield);
+//
+//        minefield.print(minefield);
+//    }
 
 
 

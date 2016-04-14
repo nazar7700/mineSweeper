@@ -12,13 +12,18 @@ import javafx.scene.layout.GridPane;
 public class Controller {
 
     private int difficulty;
-    private int rows;
-    private int cols;
+
     MineField currentMineField;
 
     MineField savedGame;
-    private int savedRows;
-    private int savedCols;
+
+    private void runGame(){
+        currentMineField = new MineField();
+        currentMineField.makeField(difficulty);
+        currentMineField.setMines(currentMineField);
+
+        currentMineField.print(currentMineField);
+    }
 
     @FXML
     private MenuButton level;
@@ -38,41 +43,26 @@ public class Controller {
     private void initialize(){
         level.setText("Beginner");
         difficulty = 1;
+        runGame();
 
-//        SaveGame.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                savedGame = new MineField();
-//                for (int i = 0; i < rows; i++) {
-//                    for (int j = 0; j < cols; j++) {
-//                        savedGame.matrix[i][j].exposed = currentMineField.matrix[i][j].exposed;
-//                        savedGame.matrix[i][j].hasMine = currentMineField.matrix[i][j].hasMine;
-//                        savedGame.matrix[i][j].marked = currentMineField.matrix[i][j].marked;
-//                        savedGame.matrix[i][j].numSurroundingMines = currentMineField.matrix[i][j].numSurroundingMines;
-//                        savedRows = currentMineField.height;
-//                        savedCols = currentMineField.width;
-//
-//                    }
-//                }
-//                System.out.println("Saved Game");
-//
-//            }
-//        });
-//        LoadGame.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                    for (int i = 0; i < savedRows; i++) {
-//                        for (int j = 0; j < savedCols; j++) {
-//                            currentMineField = savedGame;
-//
-//                        }
-//                    }
-//                currentMineField.print(currentMineField);
-//                System.out.println("Loaded Game");
-//
-//                }
-//
-//        });
+        SaveGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                savedGame = currentMineField;
+                System.out.println("Saved Game");
+
+            }
+        });
+        LoadGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                currentMineField = savedGame;
+                currentMineField.print(currentMineField);
+                System.out.println("Loaded Game");
+
+                }
+
+        });
 
         Beginner.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -102,13 +92,8 @@ public class Controller {
         NewGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                currentMineField = new MineField();
-                currentMineField.makeField(difficulty);
-                currentMineField.setMines(currentMineField);
+                runGame();
 
-
-
-                currentMineField.print(currentMineField);
             }
         });
 
