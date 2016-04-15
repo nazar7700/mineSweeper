@@ -4,13 +4,14 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <MenuButton fx:id="level" mnemonicParsing="false" text="Difficulty">
+            <MenuButton fx:id="level" mnemonicParsing="false" text="Intermediate">
                <items>
                   <MenuItem fx:id="Beginner" mnemonicParsing="false" text="Beginner" />
                   <MenuItem fx:id="Intermediate" mnemonicParsing="false" text="Intermediate" />
@@ -22,11 +23,16 @@
       </HBox>
    </top>
    <bottom>
-      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox prefHeight="30.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="SaveGame" mnemonicParsing="false" text="Save Game" />
             <Button fx:id="LoadGame" mnemonicParsing="false" text="Load Game" />
          </children>
       </HBox>
    </bottom>
+   <center>
+      <GridPane fx:id="gp" alignment="CENTER" BorderPane.alignment="CENTER">
+
+      </GridPane>
+   </center>
 </BorderPane>

@@ -11,16 +11,16 @@ import java.util.Scanner;
 
 public class MineField extends Application {
 
-    private Cell[][] matrix;
-    private int width;
-    private int height;
+    public Cell[][] matrix;
+    public int width;
+    public int height;
     private int numOfMines;
-    private boolean alreadyLost;
+    public boolean alreadyLost;
     private int numExposedCells;
 
 
 
-    private class Cell {
+    public class Cell {
         boolean hasMine;
         boolean exposed;
         boolean marked;
@@ -60,7 +60,6 @@ public class MineField extends Application {
             }
 
         }
-        //return matrix;
     }
 
     public void setMines(MineField mineField){
@@ -99,9 +98,6 @@ public class MineField extends Application {
                 currentCell.numSurroundingMines = count;
             }
         }
-
-
-        //return mineField;
     }
 
 
@@ -109,7 +105,7 @@ public class MineField extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("minesweeper.fxml"));
         primaryStage.setTitle("Minesweeper");
-        primaryStage.setScene(new Scene(root, 500, 500));
+        primaryStage.setScene(new Scene(root, 270, 400));
         primaryStage.show();
     }
 
@@ -173,7 +169,7 @@ public class MineField extends Application {
                 System.out.print(i+"  ");
             }
             else
-            System.out.print(i+ "   ");
+                System.out.print(i+ "   ");
         }
         System.out.println();
 
@@ -191,21 +187,12 @@ public class MineField extends Application {
                 else System.out.print("[ ] ");
             }
             System.out.println();
+            if(alreadyLost){
+
+            }
 
         }
     }
-
-//    public void runNewGame(int difficulty){
-//        MineField minefield = new MineField();
-//
-//        minefield.makeField(difficulty);
-//
-//        minefield.setMines(minefield);
-//
-//        minefield.print(minefield);
-//    }
-
-
 
     public static void main(String[] args) {
         launch(args);
