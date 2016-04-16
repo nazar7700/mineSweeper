@@ -161,6 +161,13 @@ public class MineField extends Application {
         return false;
     }
 
+    public int numCellsToExpose(){
+        int totCells = width * height;
+        int numCellsLeft = totCells - numOfMines - numExposedCells;
+
+        return numCellsLeft;
+    }
+
 
 
     public void print(MineField field){
