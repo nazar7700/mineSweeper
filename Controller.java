@@ -86,10 +86,20 @@ public class Controller {
                 btnMatrix[i][j].setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        if(!currentMineField.matrix[currRow][currCol].exposed && !currentMineField.matrix[currRow][currCol].marked){
-                            currentMineField.expose(currRow, currCol);
-                            currentMineField.print(currentMineField);
-                            updateVIEW();
+                        if(!currentMineField.alreadyLost){
+                            int click = currentMineField.expose(currRow, currCol);
+                            if(click == -1 ){
+                                System.out.println("You Lose");
+                            }
+                            else if(click == -2){
+                                System.out.println("Do Nothing");
+                            }
+
+                            else{
+                                currentMineField.expose(currRow, currCol);
+                                currentMineField.print(currentMineField);
+                                updateVIEW();
+                            }
                         }
                     }
                 });
@@ -138,6 +148,7 @@ public class Controller {
                 currentMineField = savedGame;
                 currentMineField.print(currentMineField);
                 System.out.println("Loaded Game");
+                System.out.println(currentMineField.alreadyLost);
                 updateVIEW();
             }
         });

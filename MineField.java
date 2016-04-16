@@ -164,7 +164,7 @@ public class MineField extends Application {
 
 
     public void print(MineField field){
-        System.out.print("   ");
+        System.out.print("    ");
         for (int i = 0; i < field.width; i++) {
             if(i > 9){
                 System.out.print(i+"  ");
@@ -183,7 +183,7 @@ public class MineField extends Application {
                     System.out.print("[*] ");
                 }
                 else if(field.matrix[i][j].exposed == true){
-                    System.out.print("[O] ");
+                    System.out.print("["+ field.matrix[i][j].numSurroundingMines +"] ");
                 }
                 else System.out.print("[ ] ");
             }
