@@ -14,6 +14,7 @@ public class MineField extends Application {
     public Cell[][] matrix;
     public int width;
     public int height;
+    public Stage stage;
     private int numOfMines;
     public boolean alreadyLost;
     private int numExposedCells;
@@ -105,7 +106,7 @@ public class MineField extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("minesweeper.fxml"));
         primaryStage.setTitle("Minesweeper");
-        primaryStage.setScene(new Scene(root, 270, 400));
+        primaryStage.setScene(new Scene(root, 270, 330));
         primaryStage.show();
     }
 
@@ -204,39 +205,6 @@ public class MineField extends Application {
 
     public static void main(String[] args) {
         launch(args);
-//        MineField newMineField = new MineField();
-//
-//        Scanner reader = new Scanner(System.in);  // Reading from System.in
-//        System.out.println("Choose Difficulty (1 2 3): ");
-//        int difficulty = reader.nextInt(); // Scans the next token of the input as an int.
-//
-//        newMineField.makeField(difficulty);
-//
-//        newMineField.setMines(newMineField);
-//
-//        newMineField.print();
-//
-//        System.out.println();
-//        while(!newMineField.alreadyLost && newMineField.numExposedCells + newMineField.numOfMines != newMineField.height*newMineField.width ) {
-//            reader = new Scanner(System.in);  // Reading from System.in
-//            System.out.println("Enter row col: ");
-//            int row = reader.nextInt(); // Scans the next token of the input as an int.
-//            int col = reader.nextInt();
-//
-//            newMineField.expose(row, col);
-//            System.out.println("Exposed Cells: "+ newMineField.numExposedCells);
-//            System.out.println("Mines: "+ newMineField.numOfMines);
-//
-//            newMineField.print();
-//        }
-//
-//        if(newMineField.alreadyLost){
-//            System.out.println();
-//            System.out.println("--------------YOU LOST--------------");
-//        }
-//        else{
-//            System.out.println();
-//            System.out.println("--------------YOU WON--------------");
-//        }
+
     }
 }

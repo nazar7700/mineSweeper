@@ -1,18 +1,25 @@
 package sample;
 
+import com.apple.laf.AquaUtilControlSize;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
 
 public class Controller {
 
@@ -29,24 +36,44 @@ public class Controller {
         currentMineField.makeField(difficulty);
         currentMineField.setMines(currentMineField);
         makeButtonMatrix();
-
+        btnsToExpose.setText("" + currentMineField.numCellsToExpose());
         currentMineField.print(currentMineField);
     }
 
-    private void losingCondition(){
-
-    }
+//    private void setCorrectWindow(){
+//
+//        int pixWidth = -1;
+//        int pixHeight= -1;
+//
+//        if(difficulty == 1){
+//            pixWidth = 270;
+//            pixHeight= 330;
+//        }
+//        if(difficulty == 2){
+//            pixWidth = 480;
+//            pixHeight= 540;
+//
+//        }
+//        if(difficulty == 3){
+//            pixWidth = 900;
+//            pixHeight = 540;
+//
+//        }
+//
+//        currentMineField.stage.setScene(new Scene(currentMineField.sRoot, pixWidth, pixHeight));
+//        currentMineField.stage.show();
+//
+//    }
 
     private void updateVIEW(){
         makeButtonMatrix();
 
-        gp.setGridLinesVisible(true);
         for (int i = 0; i < currentMineField.height; i++) {
             for (int j = 0; j < currentMineField.width; j++) {
                 if(bombCol != -1 && bombRow != -1 ){
                     btnMatrix[bombRow][bombCol].setStyle("-fx-background-color: red");
                     if(currentMineField.matrix[i][j].hasMine){
-                        btnMatrix[i][j].setStyle("-fx-background-color: red");
+                        btnMatrix[i][j].setStyle("-fx-background-color: black");
                     }
                 }
                 if(currentMineField.matrix[i][j].marked){
@@ -55,13 +82,67 @@ public class Controller {
                 if (currentMineField.matrix[i][j].exposed && !currentMineField.matrix[i][j].hasMine) {
                     btnMatrix[i][j].setStyle("-fx-background-color: lightgrey");
                     if (currentMineField.matrix[i][j].numSurroundingMines != 0) {
-                        String num = "" + currentMineField.matrix[i][j].numSurroundingMines;
-                        btnMatrix[i][j].setText(num);
+                        btnMatrix[i][j].setText("" + currentMineField.matrix[i][j].numSurroundingMines);
                     }
                 }
             }
         }
+        if(currentMineField.alreadyLost){
+            btnsToExpose.setText("You Lose");
+        }
+        else {
+            btnsToExpose.setText("" + currentMineField.numCellsToExpose());
+            if (currentMineField.numCellsToExpose() == 0){
+                btnsToExpose.setText("You Win");
+            }
+        }
     }
+    private void giveEachBtnAnAction(int i, int j){
+
+        final int currRow = i;
+        final int currCol = j;
+
+        btnMatrix[i][j].setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(currentMineField.numCellsToExpose() != 0) {
+                    if (event.isSecondaryButtonDown()) {
+                        if (!currentMineField.matrix[currRow][currCol].marked) {
+                            currentMineField.matrix[currRow][currCol].marked = true;
+                            currentMineField.print(currentMineField);
+                        } else {
+                            currentMineField.matrix[currRow][currCol].marked = false;
+                        }
+                    }
+                    if (event.isPrimaryButtonDown()) {
+                        if (!currentMineField.alreadyLost && !currentMineField.matrix[currRow][currCol].marked) {
+                            int click = currentMineField.expose(currRow, currCol);
+                            if (click == -1) {
+                                bombRow = currRow;
+                                bombCol = currCol;
+                                System.out.println("You Lose");
+                            }
+
+                            else if(click != -2) {
+                                currentMineField.expose(currRow, currCol);
+                                currentMineField.print(currentMineField);
+                                if (currentMineField.numCellsToExpose() == 0) {
+                                    System.out.println("You Win");
+                                }
+                            }
+
+                        }
+                    }
+                }
+                updateVIEW();
+            }
+        });
+    }
+//    private void makeWindowSize(){
+//        bp = new BorderPane();
+//        Node left = bp.getLeft();
+//        bp.setAlignment(left , Pos.CENTER_LEFT);
+//    }
 
     private void makeButtonMatrix(){
 
@@ -71,7 +152,6 @@ public class Controller {
 
         int row = currentMineField.height;
         int col = currentMineField.width;
-        //System.out.println(row +"," +col);
 
         for (int i = 0; i < row; i++) {
             RowConstraints rConstriant = new RowConstraints();
@@ -98,50 +178,19 @@ public class Controller {
                 final int currRow = i;
                 final int currCol = j;
 
-                btnMatrix[i][j].setOnMousePressed(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        if(currentMineField.numCellsToExpose() != 0) {
-                            if (event.isSecondaryButtonDown()) {
-                                if (!currentMineField.matrix[currRow][currCol].marked) {
-                                    currentMineField.matrix[currRow][currCol].marked = true;
-                                    currentMineField.print(currentMineField);
-                                } else {
-                                    currentMineField.matrix[currRow][currCol].marked = false;
-                                }
-                            }
-                            if (event.isPrimaryButtonDown()) {
-                                if (!currentMineField.alreadyLost && !currentMineField.matrix[currRow][currCol].marked) {
-                                    int click = currentMineField.expose(currRow, currCol);
-                                    if (click == -1) {
-                                        bombRow = currRow;
-                                        bombCol = currCol;
-                                        System.out.println("You Lose");
-                                    }
+                giveEachBtnAnAction(i , j);
 
-                                    if(click != -2) {
-                                        currentMineField.expose(currRow, currCol);
-                                        currentMineField.print(currentMineField);
-                                        if (currentMineField.numCellsToExpose() == 0) {
-                                            System.out.println("You Win");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        updateVIEW();
-                    }
-                });
+
             }
         }
-
-        gp.setGridLinesVisible(true);
     }
 
     @FXML
     private Button[][] btnMatrix;
     @FXML
     private GridPane gp;
+    @FXML
+    private BorderPane bp;
     @FXML
     private MenuButton level;
     @FXML
@@ -157,12 +206,13 @@ public class Controller {
     @FXML
     private Button LoadGame;
     @FXML
+    private Label btnsToExpose;
+    @FXML
     private void initialize(){
-        level.setText("Beginner");
+        level.setText("Easy");
         difficulty = 1;
+        NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
         runGame();
-        makeButtonMatrix();
-
 
         SaveGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -185,7 +235,7 @@ public class Controller {
         Beginner.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                level.setText("Beginner");
+                level.setText("Easy");
                 difficulty = 1;
             }
         });
@@ -193,7 +243,7 @@ public class Controller {
         Intermediate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                level.setText("Intermediate");
+                level.setText("Medium");
                 difficulty = 2;
             }
         });
@@ -202,7 +252,7 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
 
-                level.setText("Expert");
+                level.setText("Hard");
                 difficulty = 3;
             }
         });
@@ -210,6 +260,7 @@ public class Controller {
         NewGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
                 runGame();
             }
         });
