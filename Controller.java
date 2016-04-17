@@ -1,15 +1,9 @@
 package sample;
 
-import com.apple.laf.AquaUtilControlSize;
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 
 import javafx.scene.control.Label;
@@ -19,20 +13,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 
 public class Controller {
 
     private int bombRow;
     private int bombCol;
     private int difficulty;
-    MineField currentMineField;
-    MineField savedGame;
+    private MineField currentMineField;
+    private MineField savedGame;
 
     private void runGame(){
         currentMineField = new MineField();
-        bombRow = -1;
-        bombCol = -1;
+        SaveGame.setText("Save Game");
+        NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
         currentMineField.level = difficulty;
         currentMineField.makeField();
         currentMineField.setMines(currentMineField);
@@ -41,31 +34,6 @@ public class Controller {
         currentMineField.print(currentMineField);
     }
 
-//    private void setCorrectWindow(){
-//
-//        int pixWidth = -1;
-//        int pixHeight= -1;
-//
-//        if(difficulty == 1){
-//            pixWidth = 270;
-//            pixHeight= 330;
-//        }
-//        if(difficulty == 2){
-//            pixWidth = 480;
-//            pixHeight= 540;
-//
-//        }
-//        if(difficulty == 3){
-//            pixWidth = 900;
-//            pixHeight = 540;
-//
-//        }
-//
-//        currentMineField.stage.setScene(new Scene(currentMineField.sRoot, pixWidth, pixHeight));
-//        currentMineField.stage.show();
-//
-//    }
-
     private void updateVIEW(){
         makeButtonMatrix();
 
@@ -73,12 +41,17 @@ public class Controller {
             for (int j = 0; j < currentMineField.width; j++) {
                 if(currentMineField.alreadyLost ){
                     btnMatrix[bombRow][bombCol].setStyle("-fx-background-color: red");
+                    btnMatrix[bombRow][bombCol].setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("bomb.png")))));
+                    NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("skull.png")))));
+
                     if(currentMineField.matrix[i][j].hasMine){
-                        btnMatrix[i][j].setStyle("-fx-background-color: black");
+                        btnMatrix[i][j].setBackground(Background.EMPTY);
+                        btnMatrix[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("bomb.png")))));
                     }
                 }
                 if(currentMineField.matrix[i][j].marked){
-                    btnMatrix[i][j].setText("X");
+                    btnMatrix[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("flag.png")))));
+
                 }
                 if (currentMineField.matrix[i][j].exposed && !currentMineField.matrix[i][j].hasMine) {
                     btnMatrix[i][j].setStyle("-fx-background-color: lightgrey");
@@ -106,9 +79,10 @@ public class Controller {
         btnMatrix[i][j].setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                LoadGame.setText("Load Game");
                 if(currentMineField.numCellsToExpose() != 0) {
                     if (event.isSecondaryButtonDown()) {
-                        if (!currentMineField.matrix[currRow][currCol].marked) {
+                        if (!currentMineField.matrix[currRow][currCol].marked && !currentMineField.alreadyLost) {
                             currentMineField.matrix[currRow][currCol].marked = true;
                             currentMineField.print(currentMineField);
                         } else {
@@ -139,11 +113,6 @@ public class Controller {
             }
         });
     }
-//    private void makeWindowSize(){
-//        bp = new BorderPane();
-//        Node left = bp.getLeft();
-//        bp.setAlignment(left , Pos.CENTER_LEFT);
-//    }
 
     private void makeButtonMatrix(){
 
@@ -212,66 +181,74 @@ public class Controller {
     private void initialize(){
         level.setText("Easy");
         difficulty = 1;
-        NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
+        savedGame = null;
         runGame();
 
         SaveGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                if (!currentMineField.alreadyLost) {
+                    MineField copy = new MineField();
+                    copy.level = difficulty;
+                    copy.makeField();
 
-                MineField copy = new MineField();
-                copy.level = difficulty;
-                copy.makeField();
 
+                    copy.width = currentMineField.width;
+                    copy.height = currentMineField.height;
+                    copy.numOfMines = currentMineField.numOfMines;
+                    copy.alreadyLost = currentMineField.alreadyLost;
+                    copy.numExposedCells = currentMineField.numExposedCells;
 
-                copy.width = currentMineField.width;
-                copy.height = currentMineField.height;
-                copy.numOfMines = currentMineField.numOfMines;
-                copy.alreadyLost = currentMineField.alreadyLost;
-                copy.numExposedCells = currentMineField.numExposedCells;
-
-                for (int i = 0; i < currentMineField.height; i++) {
-                    for (int j = 0; j < currentMineField.width; j++) {
-                        copy.matrix[i][j].hasMine = currentMineField.matrix[i][j].hasMine;
-                        copy.matrix[i][j].exposed = currentMineField.matrix[i][j].exposed;
-                        copy.matrix[i][j].marked = currentMineField.matrix[i][j].marked;
-                        copy.matrix[i][j].numSurroundingMines = currentMineField.matrix[i][j].numSurroundingMines;
+                    for (int i = 0; i < currentMineField.height; i++) {
+                        for (int j = 0; j < currentMineField.width; j++) {
+                            copy.matrix[i][j].hasMine = currentMineField.matrix[i][j].hasMine;
+                            copy.matrix[i][j].exposed = currentMineField.matrix[i][j].exposed;
+                            copy.matrix[i][j].marked = currentMineField.matrix[i][j].marked;
+                            copy.matrix[i][j].numSurroundingMines = currentMineField.matrix[i][j].numSurroundingMines;
+                        }
                     }
-                }
 
-                savedGame = copy;
-                savedGame.print(savedGame);
-                System.out.println("Saved Game");
+                    savedGame = copy;
+                    savedGame.print(savedGame);
+                    System.out.println("Saved Game");
+                }
+                else SaveGame.setText("Can't Save");
             }
         });
         LoadGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
-                MineField copy = new MineField();
-
-                copy.level = savedGame.level;
-                copy.makeField();
-
-                for (int i = 0; i < savedGame.height; i++) {
-                    for (int j = 0; j < savedGame.width; j++) {
-                        copy.matrix[i][j].hasMine = savedGame.matrix[i][j].hasMine;
-                        copy.matrix[i][j].exposed = savedGame.matrix[i][j].exposed;
-                        copy.matrix[i][j].marked = savedGame.matrix[i][j].marked;
-                        copy.matrix[i][j].numSurroundingMines = savedGame.matrix[i][j].numSurroundingMines;
-                    }
+                if (savedGame == null) {
+                    LoadGame.setText("Can't Load");
                 }
+                else {
+                    MineField copy = new MineField();
 
-                copy.width = savedGame.width;
-                copy.height = savedGame.height;
-                copy.numOfMines = savedGame.numOfMines;
-                copy.alreadyLost = savedGame.alreadyLost;
-                copy.numExposedCells = savedGame.numExposedCells;
+                    copy.level = savedGame.level;
+                    copy.makeField();
 
-                currentMineField = copy;
-                currentMineField.print(currentMineField);
-                System.out.println("Loaded Game");
-                updateVIEW();
+                    for (int i = 0; i < savedGame.height; i++) {
+                        for (int j = 0; j < savedGame.width; j++) {
+                            copy.matrix[i][j].hasMine = savedGame.matrix[i][j].hasMine;
+                            copy.matrix[i][j].exposed = savedGame.matrix[i][j].exposed;
+                            copy.matrix[i][j].marked = savedGame.matrix[i][j].marked;
+                            copy.matrix[i][j].numSurroundingMines = savedGame.matrix[i][j].numSurroundingMines;
+                        }
+                    }
+
+                    copy.width = savedGame.width;
+                    copy.height = savedGame.height;
+                    copy.numOfMines = savedGame.numOfMines;
+                    copy.alreadyLost = savedGame.alreadyLost;
+                    copy.numExposedCells = savedGame.numExposedCells;
+
+                    currentMineField = copy;
+                    currentMineField.print(currentMineField);
+                    System.out.println("Loaded Game");
+                    NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
+                    updateVIEW();
+                }
             }
         });
 
