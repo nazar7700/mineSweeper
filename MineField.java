@@ -14,10 +14,10 @@ public class MineField extends Application {
     public Cell[][] matrix;
     public int width;
     public int height;
-    public Stage stage;
-    private int numOfMines;
+    public int numOfMines;
     public boolean alreadyLost;
-    private int numExposedCells;
+    public int numExposedCells;
+    public int level;
 
 
     public class Cell {
@@ -28,19 +28,19 @@ public class MineField extends Application {
         int numSurroundingMines;
     }
 
-    public void makeField(int difficulty){
+    public void makeField(){
 
-        if (difficulty == 1){
+        if (level == 1){
             height = 9;
             width = 9;
             numOfMines = 10;
         }
-        if (difficulty == 2){
+        if (level == 2){
             height = 16;
             width = 16;
             numOfMines = 40;
         }
-        if (difficulty == 3){
+        if (level == 3){
             height = 16;
             width = 30;
             numOfMines = 99;

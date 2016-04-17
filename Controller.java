@@ -33,7 +33,8 @@ public class Controller {
         currentMineField = new MineField();
         bombRow = -1;
         bombCol = -1;
-        currentMineField.makeField(difficulty);
+        currentMineField.level = difficulty;
+        currentMineField.makeField();
         currentMineField.setMines(currentMineField);
         makeButtonMatrix();
         btnsToExpose.setText("" + currentMineField.numCellsToExpose());
@@ -70,7 +71,7 @@ public class Controller {
 
         for (int i = 0; i < currentMineField.height; i++) {
             for (int j = 0; j < currentMineField.width; j++) {
-                if(bombCol != -1 && bombRow != -1 ){
+                if(currentMineField.alreadyLost ){
                     btnMatrix[bombRow][bombCol].setStyle("-fx-background-color: red");
                     if(currentMineField.matrix[i][j].hasMine){
                         btnMatrix[i][j].setStyle("-fx-background-color: black");
@@ -217,17 +218,59 @@ public class Controller {
         SaveGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                savedGame = currentMineField;
+
+                MineField copy = new MineField();
+                copy.level = difficulty;
+                copy.makeField();
+
+
+                copy.width = currentMineField.width;
+                copy.height = currentMineField.height;
+                copy.numOfMines = currentMineField.numOfMines;
+                copy.alreadyLost = currentMineField.alreadyLost;
+                copy.numExposedCells = currentMineField.numExposedCells;
+
+                for (int i = 0; i < currentMineField.height; i++) {
+                    for (int j = 0; j < currentMineField.width; j++) {
+                        copy.matrix[i][j].hasMine = currentMineField.matrix[i][j].hasMine;
+                        copy.matrix[i][j].exposed = currentMineField.matrix[i][j].exposed;
+                        copy.matrix[i][j].marked = currentMineField.matrix[i][j].marked;
+                        copy.matrix[i][j].numSurroundingMines = currentMineField.matrix[i][j].numSurroundingMines;
+                    }
+                }
+
+                savedGame = copy;
+                savedGame.print(savedGame);
                 System.out.println("Saved Game");
             }
         });
         LoadGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                currentMineField = savedGame;
+
+                MineField copy = new MineField();
+
+                copy.level = savedGame.level;
+                copy.makeField();
+
+                for (int i = 0; i < savedGame.height; i++) {
+                    for (int j = 0; j < savedGame.width; j++) {
+                        copy.matrix[i][j].hasMine = savedGame.matrix[i][j].hasMine;
+                        copy.matrix[i][j].exposed = savedGame.matrix[i][j].exposed;
+                        copy.matrix[i][j].marked = savedGame.matrix[i][j].marked;
+                        copy.matrix[i][j].numSurroundingMines = savedGame.matrix[i][j].numSurroundingMines;
+                    }
+                }
+
+                copy.width = savedGame.width;
+                copy.height = savedGame.height;
+                copy.numOfMines = savedGame.numOfMines;
+                copy.alreadyLost = savedGame.alreadyLost;
+                copy.numExposedCells = savedGame.numExposedCells;
+
+                currentMineField = copy;
                 currentMineField.print(currentMineField);
                 System.out.println("Loaded Game");
-                System.out.println(currentMineField.alreadyLost);
                 updateVIEW();
             }
         });
