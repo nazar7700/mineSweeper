@@ -63,7 +63,7 @@ public class MineField extends Application {
         }
     }
 
-    public void setMines(MineField mineField){
+    public void setMines(){
         int w = width;
         int h = height;
         int n = w*h;
@@ -171,9 +171,9 @@ public class MineField extends Application {
 
 
 
-    public void print(MineField field){
+    public void print(){
         System.out.print("    ");
-        for (int i = 0; i < field.width; i++) {
+        for (int i = 0; i < width; i++) {
             if(i > 9){
                 System.out.print(i+"  ");
             }
@@ -182,16 +182,16 @@ public class MineField extends Application {
         }
         System.out.println();
 
-        for (int i = 0; i < field.height; i++) {
+        for (int i = 0; i < height; i++) {
             if(i > 9){
                 System.out.print(i+" ");
             }else System.out.print(i+"  ");
-            for (int j = 0; j < field.width; j++) {
-                if(field.matrix[i][j].hasMine == true){
+            for (int j = 0; j < width; j++) {
+                if(matrix[i][j].hasMine == true){
                     System.out.print("[*] ");
                 }
-                else if(field.matrix[i][j].exposed == true){
-                    System.out.print("["+ field.matrix[i][j].numSurroundingMines +"] ");
+                else if(matrix[i][j].exposed == true){
+                    System.out.print("["+ matrix[i][j].numSurroundingMines +"] ");
                 }
                 else System.out.print("[ ] ");
             }

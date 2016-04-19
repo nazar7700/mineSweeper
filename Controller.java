@@ -28,10 +28,10 @@ public class Controller {
         NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
         currentMineField.level = difficulty;
         currentMineField.makeField();
-        currentMineField.setMines(currentMineField);
+        currentMineField.setMines();
         makeButtonMatrix();
         btnsToExpose.setText("" + currentMineField.numCellsToExpose());
-        currentMineField.print(currentMineField);
+        currentMineField.print();
     }
 
     private void updateVIEW(){
@@ -82,9 +82,10 @@ public class Controller {
                 LoadGame.setText("Load Game");
                 if(currentMineField.numCellsToExpose() != 0) {
                     if (event.isSecondaryButtonDown()) {
+                        System.out.println("Right Click");
                         if (!currentMineField.matrix[currRow][currCol].marked && !currentMineField.alreadyLost) {
                             currentMineField.matrix[currRow][currCol].marked = true;
-                            currentMineField.print(currentMineField);
+                            currentMineField.print();
                         } else {
                             currentMineField.matrix[currRow][currCol].marked = false;
                         }
@@ -100,7 +101,7 @@ public class Controller {
 
                             else if(click != -2) {
                                 currentMineField.expose(currRow, currCol);
-                                currentMineField.print(currentMineField);
+                                currentMineField.print();
                                 if (currentMineField.numCellsToExpose() == 0) {
                                     System.out.println("You Win");
                                 }
@@ -209,7 +210,7 @@ public class Controller {
                     }
 
                     savedGame = copy;
-                    savedGame.print(savedGame);
+                    savedGame.print();
                     System.out.println("Saved Game");
                 }
                 else SaveGame.setText("Can't Save");
@@ -244,7 +245,7 @@ public class Controller {
                     copy.numExposedCells = savedGame.numExposedCells;
 
                     currentMineField = copy;
-                    currentMineField.print(currentMineField);
+                    currentMineField.print();
                     System.out.println("Loaded Game");
                     NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
                     updateVIEW();
