@@ -18,7 +18,7 @@ public class MineField extends Application {
     public boolean alreadyLost;
     public int numExposedCells;
     public int level;
-
+    public int[] firstTurn = {-1, -1};
 
     public class Cell {
         boolean hasMine;
@@ -74,7 +74,7 @@ public class MineField extends Application {
             for(c = 0; c < w; c++) {
                 double p = (double) m / (double) n; // probability of placing mine here
                 double g = Math.random();
-                if (g < p) {
+                if (g < p && firstTurn[0] != r && firstTurn[1] != c) {
                     matrix[r][c].hasMine = true;
                     m--;
                 }
@@ -106,7 +106,9 @@ public class MineField extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("minesweeper.fxml"));
         primaryStage.setTitle("Minesweeper");
-        primaryStage.setScene(new Scene(root, 270, 330));
+        primaryStage.setScene(new Scene(root, 900, 540));
+        primaryStage.setMinHeight(560);
+        primaryStage.setMinWidth(900);
         primaryStage.show();
     }
 
@@ -171,7 +173,7 @@ public class MineField extends Application {
 
 
 
-    public void print(){
+/*    public void print(){
         System.out.print("    ");
         for (int i = 0; i < width; i++) {
             if(i > 9){
@@ -201,7 +203,7 @@ public class MineField extends Application {
             }
 
         }
-    }
+    }*/
 
     public static void main(String[] args) {
         launch(args);

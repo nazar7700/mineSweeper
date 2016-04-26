@@ -18,20 +18,34 @@ public class Controller {
 
     private int bombRow;
     private int bombCol;
-    private int difficulty;
     private MineField currentMineField;
     private MineField savedGame;
+
 
     private void runGame(){
         currentMineField = new MineField();
         SaveGame.setText("Save Game");
         NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
-        currentMineField.level = difficulty;
+        currentMineField.level = getNewDiff();
         currentMineField.makeField();
-        currentMineField.setMines();
         makeButtonMatrix();
+
+        //currentMineField.setMines();
         btnsToExpose.setText("" + currentMineField.numCellsToExpose());
-        currentMineField.print();
+        //currentMineField.print();
+    }
+
+    private int getNewDiff(){
+        int difficulty = 1;
+
+        if (level.getText() == "Medium"){
+            difficulty = 2;
+        }
+        if(level.getText() == "Hard"){
+            difficulty = 3;
+        }
+
+        return difficulty;
     }
 
     private void updateVIEW(){
@@ -85,25 +99,33 @@ public class Controller {
                         System.out.println("Right Click");
                         if (!currentMineField.matrix[currRow][currCol].marked && !currentMineField.alreadyLost) {
                             currentMineField.matrix[currRow][currCol].marked = true;
-                            currentMineField.print();
+                            //currentMineField.print();
                         } else {
                             currentMineField.matrix[currRow][currCol].marked = false;
                         }
                     }
                     if (event.isPrimaryButtonDown()) {
+
+                        if(currentMineField.firstTurn[0] < 0 && currentMineField.firstTurn[1] < 0){
+                            currentMineField.firstTurn[0] = currRow;
+                            currentMineField.firstTurn[1] = currCol;
+                            currentMineField.setMines();
+
+                        }
+
                         if (!currentMineField.alreadyLost && !currentMineField.matrix[currRow][currCol].marked) {
                             int click = currentMineField.expose(currRow, currCol);
                             if (click == -1) {
                                 bombRow = currRow;
                                 bombCol = currCol;
-                                System.out.println("You Lose");
+                                //System.out.println("You Lose");
                             }
 
                             else if(click != -2) {
                                 currentMineField.expose(currRow, currCol);
-                                currentMineField.print();
+                                //currentMineField.print();
                                 if (currentMineField.numCellsToExpose() == 0) {
-                                    System.out.println("You Win");
+                                    //System.out.println("You Win");
                                 }
                             }
 
@@ -161,8 +183,6 @@ public class Controller {
     @FXML
     private GridPane gp;
     @FXML
-    private BorderPane bp;
-    @FXML
     private MenuButton level;
     @FXML
     private MenuItem Beginner;
@@ -181,8 +201,8 @@ public class Controller {
     @FXML
     private void initialize(){
         level.setText("Easy");
-        difficulty = 1;
         savedGame = null;
+
         runGame();
 
         SaveGame.setOnAction(new EventHandler<ActionEvent>() {
@@ -190,7 +210,7 @@ public class Controller {
             public void handle(ActionEvent event) {
                 if (!currentMineField.alreadyLost) {
                     MineField copy = new MineField();
-                    copy.level = difficulty;
+                    copy.level = getNewDiff();
                     copy.makeField();
 
 
@@ -199,6 +219,8 @@ public class Controller {
                     copy.numOfMines = currentMineField.numOfMines;
                     copy.alreadyLost = currentMineField.alreadyLost;
                     copy.numExposedCells = currentMineField.numExposedCells;
+                    copy.firstTurn[0] = currentMineField.firstTurn[0];
+                    copy.firstTurn[1] = currentMineField.firstTurn[1];
 
                     for (int i = 0; i < currentMineField.height; i++) {
                         for (int j = 0; j < currentMineField.width; j++) {
@@ -210,8 +232,8 @@ public class Controller {
                     }
 
                     savedGame = copy;
-                    savedGame.print();
-                    System.out.println("Saved Game");
+                    //savedGame.print();
+                    //System.out.println("Saved Game");
                 }
                 else SaveGame.setText("Can't Save");
             }
@@ -243,10 +265,12 @@ public class Controller {
                     copy.numOfMines = savedGame.numOfMines;
                     copy.alreadyLost = savedGame.alreadyLost;
                     copy.numExposedCells = savedGame.numExposedCells;
+                    copy.firstTurn[0] = savedGame.firstTurn[0];
+                    copy.firstTurn[1] = savedGame.firstTurn[1];
 
                     currentMineField = copy;
-                    currentMineField.print();
-                    System.out.println("Loaded Game");
+                    //currentMineField.print();
+                    //System.out.println("Loaded Game");
                     NewGame.setGraphic(new ImageView(new Image(getClass().getResourceAsStream(("smile.png")))));
                     updateVIEW();
                 }
@@ -257,7 +281,6 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 level.setText("Easy");
-                difficulty = 1;
             }
         });
 
@@ -265,7 +288,6 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 level.setText("Medium");
-                difficulty = 2;
             }
         });
 
@@ -274,7 +296,6 @@ public class Controller {
             public void handle(ActionEvent event) {
 
                 level.setText("Hard");
-                difficulty = 3;
             }
         });
 
