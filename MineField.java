@@ -6,9 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Scanner;
-
-
 public class MineField extends Application {
 
     public Cell[][] matrix;
@@ -153,7 +150,7 @@ public class MineField extends Application {
                     int cc = col+i;
                     if(rr < 0 || rr >= h || cc < 0 || cc >= w) continue;
                     Cell neighbor = matrix[rr][cc];
-                    if(neighbor.exposed && neighbor.numSurroundingMines == 0){
+                    if(neighbor.exposed && neighbor.numSurroundingMines == 0 && !cell.marked){
                         cell.exposed = true;
                         numExposedCells++;
                         return true;

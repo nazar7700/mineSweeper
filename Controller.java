@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -96,7 +95,7 @@ public class Controller {
                 LoadGame.setText("Load Game");
                 if(currentMineField.numCellsToExpose() != 0) {
                     if (event.isSecondaryButtonDown()) {
-                        System.out.println("Right Click");
+                        //System.out.println("Right Click");
                         if (!currentMineField.matrix[currRow][currCol].marked && !currentMineField.alreadyLost) {
                             currentMineField.matrix[currRow][currCol].marked = true;
                             //currentMineField.print();
